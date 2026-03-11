@@ -1,0 +1,721 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SMS BOMBER - REHMAN EXPERT</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Share+Tech+Mono&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Share Tech Mono', monospace;
+            background: #050505;
+            color: #00FF41;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .bg-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(0,255,65,0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0,255,65,0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .scanlines {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(0,0,0,0.15),
+                rgba(0,0,0,0.15) 1px,
+                transparent 1px,
+                transparent 2px
+            );
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        .lightning {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, #fff, #00f3ff, #fff);
+            opacity: 0;
+            pointer-events: none;
+            z-index: 2000;
+        }
+
+        .lightning.flash {
+            animation: flash 0.4s ease-out;
+        }
+
+        @keyframes flash {
+            0% { opacity: 0; }
+            10% { opacity: 0.8; }
+            20% { opacity: 0; }
+            30% { opacity: 1; }
+            40% { opacity: 0; }
+            50% { opacity: 0.6; }
+            100% { opacity: 0; }
+        }
+
+        .container {
+            position: relative;
+            z-index: 10;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .danger-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 20px;
+            background: rgba(255,0,60,0.1);
+            border: 1px solid #FF003C;
+            color: #FF003C;
+            font-size: 11px;
+            letter-spacing: 3px;
+            margin-bottom: 20px;
+            animation: pulse-badge 2s infinite;
+        }
+
+        @keyframes pulse-badge {
+            0%, 100% { box-shadow: 0 0 5px rgba(255,0,60,0.3); }
+            50% { box-shadow: 0 0 20px rgba(255,0,60,0.6); }
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .skull-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .skull {
+            font-size: 40px;
+            color: #FF003C;
+            text-shadow: 0 0 20px #FF003C;
+            animation: skull-move 2s ease-in-out infinite;
+        }
+
+        .skull:first-child { animation-direction: normal; }
+        .skull:last-child { animation-direction: reverse; }
+
+        @keyframes skull-move {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(-10deg); }
+            75% { transform: rotate(10deg); }
+        }
+
+        .title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(2rem, 8vw, 4rem);
+            font-weight: 900;
+            color: #FF003C;
+            text-shadow: 
+                0 0 10px #FF003C,
+                0 0 20px #FF003C,
+                0 0 40px #FF003C;
+            letter-spacing: 4px;
+            animation: glitch 0.3s infinite;
+        }
+
+        @keyframes glitch {
+            0% { text-shadow: 2px 0 #00f3ff, -2px 0 #FF003C, 0 0 20px #FF003C; }
+            25% { text-shadow: -2px 0 #00f3ff, 2px 0 #FF003C, 0 0 20px #FF003C; }
+            50% { text-shadow: 2px 0 #FF003C, -2px 0 #00f3ff, 0 0 20px #FF003C; }
+            75% { text-shadow: -2px 0 #FF003C, 2px 0 #00f3ff, 0 0 20px #FF003C; }
+            100% { text-shadow: 2px 0 #00f3ff, -2px 0 #FF003C, 0 0 20px #FF003C; }
+        }
+
+        .title-line {
+            height: 3px;
+            width: 100%;
+            max-width: 300px;
+            margin: 10px auto;
+            background: linear-gradient(90deg, transparent, #FF003C, transparent);
+        }
+
+        .subtitle {
+            color: #00FF41;
+            font-size: 12px;
+            letter-spacing: 6px;
+            margin-top: 10px;
+            animation: flicker 2s infinite;
+        }
+
+        @keyframes flicker {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .status-row {
+            display: flex;
+            gap: 30px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .status {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 10px;
+            letter-spacing: 2px;
+        }
+
+        .status.green { color: #00FF41; }
+        .status.blue { color: #00f3ff; }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            animation: blink 1s infinite;
+        }
+
+        .dot.green { background: #00FF41; box-shadow: 0 0 10px #00FF41; }
+        .dot.blue { background: #00f3ff; box-shadow: 0 0 10px #00f3ff; }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        .form-box {
+            background: rgba(10,10,10,0.95);
+            border: 2px solid #333;
+            padding: 25px;
+            width: 100%;
+            max-width: 450px;
+            position: relative;
+        }
+
+        .form-box::before {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            background: linear-gradient(45deg, #FF003C, #00FF41, #00f3ff, #FF003C);
+            background-size: 300% 300%;
+            animation: border-glow 3s ease infinite;
+            z-index: -1;
+            opacity: 0.3;
+        }
+
+        @keyframes border-glow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .form-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #333;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 12px;
+            color: #00FF41;
+            letter-spacing: 2px;
+        }
+
+        .form-header span.zap {
+            color: #FF003C;
+            font-size: 16px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-label {
+            display: block;
+            font-size: 11px;
+            color: #00FF41;
+            letter-spacing: 2px;
+            margin-bottom: 8px;
+        }
+
+        .input-label .icon {
+            color: #FF003C;
+            margin-right: 5px;
+        }
+
+        .input-label .icon.blue {
+            color: #00f3ff;
+        }
+
+        .input-wrap {
+            position: relative;
+        }
+
+        .input-wrap::before {
+            content: '>_';
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #00FF41;
+            opacity: 0.5;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 14px 14px 14px 45px;
+            background: rgba(0,0,0,0.8);
+            border: 1px solid #00FF41;
+            color: #00FF41;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 16px;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        .input-field:focus {
+            border-color: #00f3ff;
+            box-shadow: 0 0 15px rgba(0,243,255,0.3);
+        }
+
+        .input-field::placeholder {
+            color: rgba(0,255,65,0.3);
+        }
+
+        .input-field:disabled {
+            opacity: 0.5;
+        }
+
+        .attack-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #FF003C, #cc0030);
+            border: 2px solid #FF003C;
+            color: white;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            letter-spacing: 3px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .attack-btn:hover:not(:disabled) {
+            transform: scale(1.02);
+            box-shadow: 0 0 30px #FF003C, 0 0 60px rgba(255,0,60,0.5);
+        }
+
+        .attack-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .attack-btn .zap {
+            animation: zap-pulse 1s infinite;
+        }
+
+        @keyframes zap-pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+
+        .warning {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 15px;
+            padding: 10px;
+            background: rgba(255,215,0,0.05);
+            border: 1px solid rgba(255,215,0,0.3);
+            font-size: 10px;
+            color: #ffd700;
+            letter-spacing: 1px;
+        }
+
+        .stats {
+            display: flex;
+            gap: 20px;
+            margin-top: 25px;
+            padding: 15px 25px;
+            background: rgba(0,0,0,0.5);
+            border: 1px solid #333;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-label {
+            font-size: 9px;
+            color: #666;
+            letter-spacing: 1px;
+        }
+
+        .stat-value {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 14px;
+            color: #00FF41;
+            margin-top: 3px;
+        }
+
+        .stat-value.blink {
+            animation: blink 1s infinite;
+        }
+
+        .stat-divider {
+            width: 1px;
+            background: #333;
+        }
+
+        /* OVERLAY */
+        .overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.97);
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 3000;
+        }
+
+        .overlay.show {
+            display: flex;
+        }
+
+        .overlay-border {
+            position: absolute;
+            inset: 0;
+            border: 3px solid transparent;
+            background: linear-gradient(#000,#000) padding-box,
+                        linear-gradient(90deg, #FF003C, #00FF41, #00f3ff, #FF003C) border-box;
+            background-size: 300% 300%;
+            animation: border-glow 2s ease infinite;
+            pointer-events: none;
+        }
+
+        .troll-box {
+            position: relative;
+        }
+
+        .troll {
+            width: 160px;
+            height: 160px;
+            background: #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 100px;
+            filter: drop-shadow(0 0 20px #00FF41);
+        }
+
+        .troll.shake {
+            animation: shake 0.08s infinite;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0) rotate(0); }
+            25% { transform: translateX(-8px) rotate(-5deg); }
+            50% { transform: translateX(8px) rotate(5deg); }
+            75% { transform: translateX(-4px) rotate(-2deg); }
+        }
+
+        .ring {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 220px;
+            height: 220px;
+            border: 2px solid #00FF41;
+            border-radius: 50%;
+            animation: ring-expand 1s infinite;
+        }
+
+        @keyframes ring-expand {
+            0% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+            100% { transform: translate(-50%, -50%) scale(1.5); opacity: 0; }
+        }
+
+        .progress-box {
+            width: 80%;
+            max-width: 500px;
+            margin-top: 30px;
+        }
+
+        .attack-text {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 18px;
+            color: #FF003C;
+            text-align: center;
+            margin-bottom: 20px;
+            text-shadow: 0 0 20px #FF003C;
+            animation: text-pulse 0.5s infinite;
+        }
+
+        @keyframes text-pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .progress-bar-box {
+            background: #1a1a1a;
+            border: 2px solid #00FF41;
+            padding: 4px;
+            height: 30px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #00FF41, #00f3ff);
+            box-shadow: 0 0 15px #00FF41;
+            transition: width 0.1s;
+        }
+
+        .terminal-bar {
+            text-align: center;
+            margin-top: 10px;
+            font-size: 14px;
+            color: #00FF41;
+        }
+
+        .count-box {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 20px;
+            font-family: 'Orbitron', sans-serif;
+            animation: count-pulse 0.3s infinite;
+        }
+
+        @keyframes count-pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+        }
+
+        .count-label {
+            font-size: 14px;
+            color: #00FF41;
+        }
+
+        .count-num {
+            font-size: 36px;
+            color: #FF003C;
+            text-shadow: 0 0 20px #FF003C;
+        }
+
+        .count-slash {
+            font-size: 28px;
+            color: #666;
+        }
+
+        .count-total {
+            font-size: 28px;
+            color: #00FF41;
+        }
+
+        .complete-box {
+            text-align: center;
+            display: none;
+        }
+
+        .complete-box.show {
+            display: block;
+        }
+
+        .complete-icon {
+            font-size: 60px;
+            color: #00FF41;
+            text-shadow: 0 0 30px #00FF41;
+            animation: spin 2s linear infinite;
+            margin-bottom: 15px;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .complete-text {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 28px;
+            color: #00FF41;
+            text-shadow: 0 0 30px #00FF41;
+        }
+
+        .result-text {
+            font-size: 16px;
+            color: #00f3ff;
+            margin-top: 10px;
+        }
+
+        .attacking-box.hide {
+            display: none;
+        }
+
+        /* FOOTER */
+        .footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 15px;
+            text-align: center;
+            background: linear-gradient(to top, rgba(5,5,5,0.95), transparent);
+            z-index: 100;
+        }
+
+        .footer-line {
+            width: 150px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #FF003C, transparent);
+            margin: 0 auto 10px;
+        }
+
+        .credit {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 11px;
+            color: #FF003C;
+            letter-spacing: 3px;
+        }
+
+        .credit:hover {
+            text-shadow: 0 0 10px #FF003C;
+        }
+
+        @media (max-width: 500px) {
+            .title { font-size: 1.8rem; }
+            .skull { font-size: 30px; }
+            .form-box { padding: 20px 15px; }
+            .troll { width: 120px; height: 120px; font-size: 70px; }
+            .count-num { font-size: 28px; }
+            .stats { gap: 15px; padding: 12px 15px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-grid"></div>
+    <div class="scanlines"></div>
+    <div class="lightning" id="lightning"></div>
+
+    <div class="container">
+        <div class="danger-badge">
+            ⚠ DANGER ZONE ⚠
+        </div>
+
+        <div class="header">
+            <div class="skull-row">
+                <span class="skull">💀</span>
+                <div>
+                    <h1 class="title">SMS BOMBER</h1>
+                    <div class="title-line"></div>
+                </div>
+                <span class="skull">💀</span>
+            </div>
+            <p class="subtitle">// CYBER ATTACK SYSTEM //</p>
+            <div class="status-row">
+                <div class="status green">
+                    <span class="dot green"></span>
+                    SYSTEM ONLINE
+                </div>
+                <div class="status blue">
+                    <span class="dot blue"></span>
+                    READY TO ATTACK
+                </div>
+            </div>
+        </div>
+
+        <form class="form-box" id="attackForm">
+            <div class="form-header">
+                <span class="zap">⚡</span>
+                ATTACK CONFIGURATION
+                <span class="zap">⚡</span>
+            </div>
+
+            <div class="input-group">
+                <label class="input-label">
+                    <span class="icon">⊕</span> TARGET NUMBER
+                </label>
+                <div class="input-wrap">
+                    <input type="text" id="targetNum" class="input-field" placeholder="923001234567" required>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label class="input-label">
+                    <span class="icon blue">#</span> SMS AMOUNT
+                </label>
+                <div class="input-wrap">
+                    <input type="number" id="smsAmt" class="input-field" placeholder="Enter amount (1-500)" min="1" max="500" required>
+                </div>
+            </div>
+
+            <button type="submit" class="attack-btn" id="attackBtn">
+                <span class="zap">⚡</span>
+                LAUNCH ATTACK
+                <span class="zap">⚡</span>
+            </button>
+
+            <div class="warning">
+                ⚠ Use responsibly. Developer not liable for misuse.
+            </div>
+        </form>
+
+        <div class="stats">
+            <div class="stat">
+                <div class="stat-label">MAX SMS</div>
+                <div class="stat-value">500</div>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat">
+                <div class="stat-label">SPEED</div>
+                <div class="stat-value">FAST</div>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat">
+                <div class="stat-label">STATUS</div>
+                <div class="stat-value blink">ACTIVE</div>
+            </div>
+  </div>
